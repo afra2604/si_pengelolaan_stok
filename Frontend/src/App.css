@@ -4,7 +4,19 @@
   padding: 2rem;
   text-align: center;
 }
+/* Hilangkan background abu-abu pada input antd */
+.ant-input {
+  background-color: white !important;
+}
 
+.ant-input-affix-wrapper {
+  background-color: white !important;
+}
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  box-shadow: 0 0 0 1000px white inset !important;
+  background-color: white !important;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -17,6 +29,23 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
+
+.ant-layout-sider {
+  position: fixed !important;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  height: 100vh !important;
+  z-index: 100;
+}
+.ant-layout {
+  margin-left: 220px !important;
+}
+
+.ant-layout-content {
+  overflow: auto;
+}
+
 
 @keyframes logo-spin {
   from {
