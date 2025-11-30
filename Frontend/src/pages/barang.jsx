@@ -35,7 +35,7 @@ const { Title } = Typography;
 const API = axios.create({
   baseURL: "http://localhost:5000",
   timeout: 10000,
-  withCredentials: true,   // WAJIB untuk DELETE, PUT, POST kalau pakai CORS Cookie
+  withCredentials: true, // WAJIB untuk DELETE, PUT, POST kalau pakai CORS Cookie
 });
 
 export default function App() {
@@ -108,61 +108,60 @@ export default function App() {
     }
   };
 
-  // ======================================================================
   // 4. HANDLE DELETE
-  // ======================================================================
- const handleDelete = (id, name) => {
-  Modal.confirm({
-    title: "Hapus Barang",
-    content: `Apakah Anda yakin ingin menghapus "${name}"?`,
-    okText: "Hapus",
-    okType: "danger",
-    cancelText: "Batal",
 
-    async onOk() {
-      try {
-        const barangId = Number(id);
+  const handleDelete = (id, name) => {
+    Modal.confirm({
+      title: "Hapus Barang",
+      content: `Apakah Anda yakin ingin menghapus "${name}"?`,
+      okText: "Hapus",
+      okType: "danger",
+      cancelText: "Batal",
 
-        // Optimistic Update — UI langsung hilang
-        setData((prev) => prev.filter((item) => item.barang_id !== barangId));
+      async onOk() {
+        try {
+          const barangId = Number(id);
 
-        // Request ke backend
-        const res = await API.delete(`/barang/${barangId}`);
+          // Optimistic Update — UI langsung hilang
+          setData((prev) => prev.filter((item) => item.barang_id !== barangId));
 
-        message.success(res.data?.message || `Barang "${name}" berhasil dihapus`);
+          // Request ke backend
+          const res = await API.delete(`/barang/${barangId}`);
 
-        // Fallback reload untuk sync penuh
-        setTimeout(() => {
-          loadData();
-        }, 300);
+          message.success(
+            res.data?.message || `Barang "${name}" berhasil dihapus`
+          );
 
-      } catch (err) {
-        console.error("Delete Error:", err);
+          // Fallback reload untuk sync penuh
+          setTimeout(() => {
+            loadData();
+          }, 300);
+        } catch (err) {
+          console.error("Delete Error:", err);
 
-        let errorMessage = "Gagal menghapus barang.";
+          let errorMessage = "Gagal menghapus barang.";
 
-        if (err.response?.data?.error) {
-          errorMessage = err.response.data.error;
+          if (err.response?.data?.error) {
+            errorMessage = err.response.data.error;
 
-          if (
-            errorMessage.includes("Cannot delete or update a parent row") ||
-            errorMessage.includes("IntegrityError")
-          ) {
-            errorMessage = ` Barang "${name}" tidak dapat dihapus karena sedang dipakai di transaksi. Hapus transaksi terkait terlebih dahulu.`;
+            if (
+              errorMessage.includes("Cannot delete or update a parent row") ||
+              errorMessage.includes("IntegrityError")
+            ) {
+              errorMessage = ` Barang "${name}" tidak dapat dihapus karena sedang dipakai di transaksi. Hapus transaksi terkait terlebih dahulu.`;
+            }
           }
+
+          message.error(errorMessage);
+          // Undo UI change kalau gagal
+          loadData();
         }
+      },
+    });
+  };
 
-        message.error(errorMessage);
-        // Undo UI change kalau gagal
-        loadData();
-      }
-    },
-  });
-};
-
-  // ======================================================================
   // 5. MODAL & FORM
-  // ======================================================================
+
   const showModal = (item = null) => {
     setEditItem(item);
     if (item) {
@@ -190,9 +189,8 @@ export default function App() {
     form.resetFields();
   };
 
-  // ======================================================================
   // 6. TABLE COLUMNS (Sesuai Database Anda)
-  // ======================================================================
+
   const columns = [
     {
       title: "ID",
@@ -306,9 +304,8 @@ export default function App() {
     },
   ];
 
-  // ======================================================================
   // 7. RENDER UI
-  // ======================================================================
+
   return (
     <div
       style={{ padding: 24, minHeight: "100vh", backgroundColor: "#f0f2f5" }}
