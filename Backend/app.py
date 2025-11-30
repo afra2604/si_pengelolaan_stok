@@ -3,7 +3,7 @@ from flask_cors import CORS
 from db import get_db
 from barang import bp as barang_bp
 from alerts import bp as alerts_bp 
-from login import bp_auth  
+from login import bp_auth
 
 app = Flask(__name__)
 # Menggunakan konfigurasi CORS yang lebih spesifik (sudah benar, biarkan saja)
@@ -19,7 +19,7 @@ CORS(
 # REGISTER BLUEPRINT
 app.register_blueprint(barang_bp)
 app.register_blueprint(alerts_bp)
-app.register_blueprint(bp_auth) # <--- DAFTARKAN BLUEPRINT LOGIN DI SINI
+app.register_blueprint(bp_auth) 
 
 if __name__ == "__main__":
     # Tetapkan host dan port untuk konsistensi

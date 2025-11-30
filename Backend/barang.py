@@ -1,9 +1,7 @@
 from flask import Blueprint, jsonify, request
 from db import get_db
 from datetime import datetime
-
 bp = Blueprint("barang", __name__, url_prefix="/barang")
-
 
 def query_db(query, args=(), fetch=False, many=False):
     conn = get_db()
@@ -13,45 +11,34 @@ def query_db(query, args=(), fetch=False, many=False):
         cur.execute(query, args)
         
         if fetch:
-            data = cur.fetchall() if many else cur.fetchone()
-            
+            data = cur.fetchall() if many else cur.fetchone()    
         conn.commit()
-        
     except Exception as e:
-        # !!! DEBUG: TAMPILKAN ERROR KE TERMINAL !!!
+     
         print("--- DATABASE EXCEPTION START ---")
         print(f"Query Gagal: {query}")
         print(f"Args: {args}")
         print(f"Error Detail: {e}")
         print("--- DATABASE EXCEPTION END ---")
         conn.rollback()
-        raise e # Meneruskan error ke route untuk ditangkap dan dikirim sebagai 500
-        
+        raise e 
     finally:
         cur.close()
         conn.close() 
     return data
-
-
 # Response Helpers
-
 def success(data=None, message=None):
     res = {"success": True}
     if message: res["message"] = message
     if data is not None: res["data"] = data
     return jsonify(res), 200
-
 def error(message, code=400):
     return jsonify({"success": False, "error": message}), code
-
-
 # 1. READ (GET) - Ambil Semua Data
-
 @bp.route("/", methods=["GET"])
 def get_all_barang():
     try:
         data = query_db("SELECT * FROM barang ORDER BY barang_id DESC", many=True, fetch=True)
-
         # Format tanggal agar tidak error saat di-convert ke JSON
         if data:
             for item in data:
