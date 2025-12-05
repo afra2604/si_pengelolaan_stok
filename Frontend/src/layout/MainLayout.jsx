@@ -3,16 +3,19 @@ import { Layout, Menu } from "antd";
 import {
   UserOutlined,
   AppstoreOutlined,
-  WarningOutlined,
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  BookOutlined,
 } from "@ant-design/icons";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 export default function MainLayout() {
+  const navigate = useNavigate(); 
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* SIDEBAR */}
       <Sider width={220} collapsible style={{ background: "#fff" }}>
         <div
           style={{
@@ -23,35 +26,39 @@ export default function MainLayout() {
             fontWeight: "bold",
             color: "#fff",
             background: "#001529",
-            marginBottom: 10
+            marginBottom: 10,
           }}
         >
           Sistem Stok
         </div>
+
         <Menu
           defaultSelectedKeys={["dashboard"]}
           mode="inline"
+          // Fungsi ini menggabungkan '/' dengan key menu untuk navigasi
+          onClick={({ key }) => navigate(`/${key}`)}  
           items={[
+            { key: "dashboard", icon: <UserOutlined />, label: "Home" },
+            { key: "barang", icon: <AppstoreOutlined />, label: "Barang" },
             {
-              key: "dashboard",
-              icon: <UserOutlined />,
-              label: "Dashboard",
+              key: "transactions_masuk", // Sesuai dengan route di App.jsx
+              icon: <ArrowDownOutlined />,
+              label: "transactions Masuk",
             },
             {
-              key: "barang",
-              icon: <AppstoreOutlined />,
-              label: "Barang",
+              key: "transactions_keluar",
+              icon: <ArrowUpOutlined />,
+              label: "transactions Keluar",
             },
             {
-              key: "peringatan",
-              icon: <WarningOutlined />,
-              label: "Peringatan",
+              key: "catatan_utang",
+              icon: <BookOutlined />,
+              label: "Catatan Utang",
             },
           ]}
         />
       </Sider>
 
-      {/* MAIN CONTENT */}
       <Layout style={{ padding: "24px" }}>
         <Content
           style={{
@@ -61,10 +68,9 @@ export default function MainLayout() {
             borderRadius: 8,
           }}
         >
-          <Outlet />
+          <Outlet /> {/* Area ini akan menampilkan halaman Dashboard, Barang, atau transactionsMasuk */}
         </Content>
       </Layout>
-
     </Layout>
   );
 }

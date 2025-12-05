@@ -1,94 +1,97 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, Card, Avatar } from "antd";
+import { Form, Input, Button, Card, Avatar, message } from "antd"; // Import message
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import API from "../services/api";
 
 export default function Login() {
-  const [nama, setNama] = useState("");
-  const [password, setPassword] = useState("");
+  // HAPUS: const [nama, setNama] = useState("");
+  // HAPUS: const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  // TERIMA 'values' LANGSUNG DARI Form.onFinish
+  const handleLogin = async (values) => { 
     try {
       const res = await API.post("/login", {
-        nama,
-        password,
+        nama: values.nama,
+        password: values.password,
       });
 
       console.log("Login berhasil:", res.data);
 
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      // Pastikan res.data.data ada (sesuai format blueprint login yang saya berikan)
+      localStorage.setItem("user", JSON.stringify(res.data.data)); 
+      
+      message.success(res.data.message || "Login berhasil!");
 
-      navigate("/");
+      navigate("/dashboard"); // Arahkan ke dashboard
     } catch (err) {
-      console.error("Login gagal:", err);
-      alert("Login gagal!");
+      console.error("Login gagal:", err.response || err);
+      // Tampilkan error dari backend jika ada (misal 401: Nama/Password salah)
+      message.error(err.response?.data?.error || "Login gagal! Cek Nama dan Password.");
     }
   };
 
   return (
-    <div    style={{
-    height: "100vh",
-    width: "100vw",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "#2f2f2f"
-  }}
->
-      <div style={{ textAlign: "center" }}>
-    <Avatar
-      size={64}
-      src="https://t4.ftcdn.net/jpg/02/37/83/65/500_F_237836548_QZ5lcLl0Le4fhjal2MlgOPK3dyDMBbfR.jpg"
-      style={{ margin: "0 auto 20px", display: "block" }}
-    />
-
-      <Card
-        bordered={false}
+    <div 
         style={{
-          textAlign: "center",
-          width: 400,
-          margin: "0 auto",
-          boxShadow: "0 3px 6px rgba(0,0,0,0.16)",
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#2f2f2f"
         }}
-      >
-        <Form onFinish={handleLogin} className="login-form">
-          <h1 style={{ marginBottom: 25 }}>Login</h1>
+    >
+      <div style={{ textAlign: "center" }}>
+        {/* ... (Avatar dan Card tetap sama) ... */}
 
-          <Form.Item
-            name="nama"
-            rules={[{ required: true, message: "Nama wajib diisi" }]}
-          >
-            <Input
-              prefix={<UserOutlined />}
-              placeholder="Nama"
-              onChange={(e) => setNama(e.target.value)}
-            />
-          </Form.Item>
+        <Card
+          bordered={false}
+          style={{
+            textAlign: "center",
+            width: 400,
+            margin: "0 auto",
+            boxShadow: "0 3px 6px rgba(0,0,0,0.16)",
+          }}
+        >
+          {/* UBAH onFinish untuk memanggil handler langsung */}
+          <Form onFinish={handleLogin} className="login-form"> 
+            <h1 style={{ marginBottom: 25 }}>Login</h1>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "Password wajib diisi" }]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Form.Item>
+            <Form.Item
+              name="nama"
+              rules={[{ required: true, message: "Nama wajib diisi" }]}
+            >
+              <Input
+                prefix={<UserOutlined />}
+                placeholder="Nama"
+                // HAPUS: onChange={(e) => setNama(e.target.value)}
+              />
+            </Form.Item>
 
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            style={{ marginBottom: 15 }}
-          >
-            Log in
-          </Button>
-        </Form>
-      </Card>
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: "Password wajib diisi" }]}
+            >
+              <Input.Password
+                prefix={<LockOutlined />}
+                placeholder="Password"
+                // HAPUS: onChange={(e) => setPassword(e.target.value)}
+              />
+            </Form.Item>
+
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              style={{ marginBottom: 15 }}
+            >
+              Log in
+            </Button>
+          </Form>
+        </Card>
       </div>
     </div>
   );

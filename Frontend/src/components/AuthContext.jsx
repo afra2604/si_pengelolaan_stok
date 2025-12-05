@@ -14,14 +14,20 @@ export function AuthProvider({ children }) {
 
   // Cek token dari localStorage saat aplikasi dimuat
   useEffect(() => {
-    // Gunakan 'token' sebagai key, sesuai dengan praktik umum
-    const storedUser = localStorage.getItem('user'); 
-    if (storedUser) {
-        // Asumsi data user disimpan dalam bentuk JSON string
-        setCurrentUser(JSON.parse(storedUser));
+  try {
+    const raw = localStorage.getItem("user");
+    if (!raw) {
+      setCurrentUser(null);
+    } else {
+      setCurrentUser(JSON.parse(raw));
     }
-    setLoading(false); // Selesai loading
-  }, []);
+  } catch (e) {
+    localStorage.removeItem("user");
+    setCurrentUser(null);
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   // Fungsi untuk login
   const login = async (nama, password) => {
