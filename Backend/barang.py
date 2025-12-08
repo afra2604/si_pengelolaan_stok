@@ -34,6 +34,8 @@ def success(data=None, message=None):
     return jsonify(res), 200
 def error(message, code=400):
     return jsonify({"success": False, "error": message}), code
+
+
 # 1. READ (GET) - Ambil Semua Data
 @bp.route("/", methods=["GET"])
 def get_all_barang():

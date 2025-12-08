@@ -5,6 +5,7 @@ from barang import bp as barang_bp
 from alerts import bp as alerts_bp 
 from login import bp_auth
 from transactions_masuk import bp as transactions_masuk_bp
+from transactions_keluar import bp as transactions_keluar_bp
 
 app = Flask(__name__)
 # Menggunakan konfigurasi CORS yang lebih spesifik (sudah benar, biarkan saja)
@@ -22,6 +23,7 @@ app.register_blueprint(barang_bp)
 app.register_blueprint(alerts_bp)
 app.register_blueprint(bp_auth) 
 app.register_blueprint(transactions_masuk_bp)
+app.register_blueprint(transactions_keluar_bp)
 
 
 if __name__ == "__main__":

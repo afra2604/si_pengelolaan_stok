@@ -1,12 +1,13 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login"; 
-import Dashboard from "./pages/Dashboard"; 
-import Barang from "./pages/Barang"; 
-import TransactionsMasuk from "./pages/transactions_masuk"; 
-import MainLayout from "./layout/MainLayout"; 
-import ProtectedRoute from "./components/ProtectedRoute"; 
-import { AuthProvider } from "./components/AuthContext"; 
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Barang from "./pages/Barang";
+import TransactionsMasuk from "./pages/transactions_masuk";
+import MainLayout from "./layout/MainLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./components/AuthContext";
+import TransactionsKeluar from "./pages/transactions_keluar";
 
 function App() {
   return (
@@ -16,24 +17,30 @@ function App() {
           {/* Rute Login: Tidak dilindungi */}
           <Route path="/login" element={<Login />} />
 
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
               <ProtectedRoute>
                 <MainLayout />
               </ProtectedRoute>
             }
           >
-            <Route index element={<Dashboard />} /> 
-            <Route path="dashboard" element={<Dashboard />} /> 
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="barang" element={<Barang isDashboard={false} />} />
-            
+
             {/* KOREKSI: Path diubah dari "transactions_masuk" menjadi "transactions_masuk" 
                agar sesuai dengan key yang digunakan di MainLayout.jsx. */}
             <Route path="transactions_masuk" element={<TransactionsMasuk isTransactions_masuk={false} />} />
-            
+
+    
+
+          <Route
+            path="transactions_keluar"
+            element={<TransactionsKeluar isTransactions_keluar={false} />} />
+
           </Route>
-          
+
           <Route path="*" element={
             <div className="flex justify-center items-center h-screen text-2xl font-bold">
               404 | Halaman Tidak Ditemukan
