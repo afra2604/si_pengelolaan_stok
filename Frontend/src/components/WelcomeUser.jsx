@@ -1,46 +1,75 @@
 import { Card, Row, Col, Button, Typography } from "antd";
-import dashboardImg from "../assets/dashboard.png";
+import { useEffect, useState, useMemo, use } from "react";
+import { getHours} from 'date-fns';
 
 const { Title, Paragraph } = Typography;
 
+const getGreeting = () => {
+  const hour = getHours(new Date());
+  if (hour < 11) return "Selamat Pagi";
+  if (hour < 18) return "Selamat Siang";
+  return "Selamat Malam";
+};
+
 const WelcomeUser = () => {
+
+  const [greeting,  setGreeting] = useState('');
+  const [rawUserName, setRawUserName] = useState ('Guest');
+
+  useEffect(() => {
+    setGreeting(getGreeting());
+    const storedUserString = localStorage.getItem('user');
+
+    if (storedUserString) {
+      try {
+        const userData = JSON.parse(storedUserString);
+
+        if (userData && userData.nama){
+          setRawUserName(userData.nama);
+        }
+      } catch (e){
+        console.error("Gagal parse user data dari localStorage: ", e);
+      }
+    }
+  }, []);
+
+  const formattedName = useMemo(() => {
+    return rawUserName.split(' ').map(word =>
+      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    ).join(' ');
+  }, [rawUserName]);
+
   return (
     <Card
-      className="relative overflow-hidden bg-zinc-900 rounded-md mb-5 border-none"
+      className="relative overflow-hidden rounded-lg mb-5 border-none shadow-xl"
+      style={{
+        backgroundColor:'#d6e6ff',
+        color: '#1f1f1f'
+      }}
       bodyStyle={{ padding: "24px" }}
     >
       <Row align="middle" gutter={24} className="relative z-10">
-        <Col xs={24} lg={16}>
-          <Title level={4} className="!text-white !mb-3">
-            Welcome Ara
+        <Col xs={24}>
+          <Title 
+            level={4} 
+            className="!mb-2 !font-semibold"
+            style={{color: '#001f3f'}}
+            >
+            {greeting}, {formattedName}
           </Title>
 
-          <Paragraph className="!text-white/70 !text-sm !mb-5">
+          <Paragraph
+              style={{color: '#001f3f99'}}
+              className="!text-sm !mb-0"
+          >
             Bagian pengolahan stok berfungsi untuk memberikan gambaran jelas
             tentang kondisi persediaan di gudang. Di sini, tim operasional bisa
             memantau pergerakan barang, melihat kebutuhan restock, dan
             memastikan proses keluar–masuk stok berjalan akurat dan efisien
             setiap saat.
           </Paragraph>
-
-          <Button type="primary">Take a Product</Button>
-        </Col>
-
-        <Col xs={0} lg={8} className="flex justify-end">
-          <img
-            src={dashboardImg}
-            alt="dashboard"
-            className="h-40"
-            width={160}
-            height={160}
-          />
         </Col>
       </Row>
-
-      {/* Background SVG */}
-      <div className="absolute inset-0 pointer-events-none opacity-40">
-        {/* SVG lo tetap sama */}
-      </div>
     </Card>
   );
 };
